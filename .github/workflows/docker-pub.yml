@@ -1,0 +1,23 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+    - uses: actions/checkout@v3
+    
+    - name: Build Docker image
+      run: docker build . --tag ${{ secrets.DOCKERHUB_USERNAME }}/python-auth-example:latest
+
+    - name: Push Docker image to DockerHub
+      run: |
+        docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/python-auth-example:latest
